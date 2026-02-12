@@ -12,7 +12,7 @@ An autonomous AI battle simulation where Agent Smith's swarm AI hunts Neo across
 
 ## Real World Scenario: Incident Swarm Commander
 
-> *"An incident starts as one Smith. Within minutes, it multiplies across services/endpoints. My console shows the replication graph in real-time, explains the spawn reasons, and coordinates specialized agents — triage, diagnosis, mitigation, and comms — so responders can contain the spread instead of chasing tickets."*
+> *"An incident starts as one "Agent Smith". Within minutes, it multiplies across services/endpoints. My console shows the replication graph in real-time, explains the spawn reasons, and coordinates specialized agents "Neo" — triage, diagnosis, mitigation, and comms — so responders can contain the spread instead of chasing tickets."Neo Agent" has a "shockwave" that eliminates the threats."*
 
 This simulation models how cascading incidents behave in production systems. Each Smith agent represents a failure propagating across services — replicating through dependencies, adapting its strategy as it spreads. Neo represents the incident response system: an autonomous coordinator that triages threats, prioritizes containment, and deploys targeted countermeasures (shockwave = mass remediation, bullet time = buying time for diagnosis).
 
