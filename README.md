@@ -67,7 +67,7 @@ Opens at `http://localhost:5173` — features Matrix code rain, CRT scanlines, s
 
 ### Demo
 
-<img src="demo.gif" alt="Demo" width="100%">
+<img src="demo.webp" alt="Demo" width="100%">
 
 ### MCP Server
 
