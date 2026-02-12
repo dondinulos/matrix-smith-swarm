@@ -63,11 +63,11 @@ npm run web
 
 Opens at `http://localhost:5173` — features Matrix code rain, CRT scanlines, shockwave animations, and a glowing terminal aesthetic.
 
-![UI](ui.png)
+<img src="ui.png" alt="UI" width="100%">
 
 ### Demo
 
-![Demo](demo.gif)
+<img src="demo.gif" alt="Demo" width="100%">
 
 ### MCP Server
 
