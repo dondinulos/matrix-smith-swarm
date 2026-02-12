@@ -51,6 +51,10 @@ Opens at `http://localhost:5173` — features Matrix code rain, CRT scanlines, s
 
 ![UI](ui.png)
 
+### Demo
+
+<video src="video.mp4" autoplay loop muted playsinline width="100%"></video>
+
 ### MCP Server
 
 ```bash
