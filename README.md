@@ -53,7 +53,7 @@ Opens at `http://localhost:5173` — features Matrix code rain, CRT scanlines, s
 
 ### Demo
 
-<video src="video.mp4" autoplay loop muted playsinline width="100%"></video>
+![Demo](demo.gif)
 
 ### MCP Server
 
