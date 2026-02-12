@@ -1,0 +1,22 @@
+{
+  "name": "matrix-smith-swarm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Matrix: Agent Smith Swarm Simulator — autonomous AI battle with dual terminal and web UIs",
+  "scripts": {
+    "terminal": "npx tsx terminal/index.ts",
+    "web": "cd web && npm run dev",
+    "web:install": "cd web && npm install",
+    "mcp": "npx tsx mcp-server/src/index.ts",
+    "install:all": "npm install && cd web && npm install && cd ../mcp-server && npm install"
+  },
+  "dependencies": {
+    "blessed": "^0.1.81"
+  },
+  "devDependencies": {
+    "@types/blessed": "^0.1.25",
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}

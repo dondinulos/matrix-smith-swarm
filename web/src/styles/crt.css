@@ -1,0 +1,57 @@
+/* CRT monitor scanline effect */
+.matrix-terminal::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Subtle CRT flicker */
+.matrix-terminal::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 255, 65, 0.02);
+  pointer-events: none;
+  z-index: 99;
+  animation: crt-flicker 0.15s infinite;
+}
+
+@keyframes crt-flicker {
+  0% { opacity: 0.27; }
+  10% { opacity: 0.24; }
+  20% { opacity: 0.18; }
+  30% { opacity: 0.65; }
+  40% { opacity: 0.27; }
+  50% { opacity: 0.96; }
+  60% { opacity: 0.20; }
+  70% { opacity: 0.53; }
+  80% { opacity: 0.71; }
+  90% { opacity: 0.70; }
+  100% { opacity: 0.24; }
+}
+
+/* Vignette shadow */
+.matrix-terminal {
+  box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.7);
+}
+
+/* Disable font smoothing for authentic terminal look */
+.matrix-terminal * {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: none;
+}

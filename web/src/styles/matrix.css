@@ -1,0 +1,424 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;700&display=swap');
+
+:root {
+  --matrix-green: #00ff41;
+  --matrix-dark-green: #003b00;
+  --matrix-bright-green: #39ff14;
+  --matrix-bg: #000000;
+  --matrix-dim: #0a3a0a;
+  --matrix-red: #ff0040;
+  --matrix-yellow: #ffd700;
+  --matrix-white: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Fira Code', 'Courier New', monospace;
+  background: var(--matrix-bg);
+  color: var(--matrix-green);
+  overflow: hidden;
+  height: 100vh;
+}
+
+#root {
+  height: 100vh;
+}
+
+/* ── Terminal container ─────────────────────────── */
+
+.matrix-terminal {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Code rain canvas ───────────────────────────── */
+
+.code-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ── Terminal content (above code rain) ─────────── */
+
+.terminal-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 8px;
+}
+
+/* ── Header ─────────────────────────────────────── */
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--matrix-dark-green);
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.header-title {
+  font-weight: 700;
+  font-size: 18px;
+  text-shadow: 0 0 10px var(--matrix-green);
+}
+
+.header-bar {
+  color: var(--matrix-dark-green);
+  flex-shrink: 1;
+  overflow: hidden;
+}
+
+.header-tick {
+  color: var(--matrix-bright-green);
+  font-weight: 500;
+}
+
+.header-phase {
+  color: var(--matrix-yellow);
+  font-weight: 700;
+}
+
+/* ── Body layout ────────────────────────────────── */
+
+.terminal-body {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  padding: 8px 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.terminal-left {
+  flex: 3;
+  min-width: 0;
+}
+
+.terminal-right {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* ── Simulation grid ────────────────────────────── */
+
+.sim-grid {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-border {
+  border: 1px solid var(--matrix-dark-green);
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.1) inset;
+}
+
+.grid-row {
+  display: flex;
+  line-height: 1.4;
+}
+
+.grid-cell {
+  width: 1.4em;
+  text-align: center;
+  font-size: 14px;
+}
+
+.grid-cell.empty {
+  color: var(--matrix-dark-green);
+}
+
+.grid-cell.neo {
+  color: var(--matrix-white);
+  font-weight: 700;
+  text-shadow:
+    0 0 8px var(--matrix-white),
+    0 0 20px var(--matrix-green);
+  animation: neo-pulse 1s ease-in-out infinite;
+}
+
+.grid-cell.smith {
+  color: var(--matrix-red);
+  font-weight: 700;
+  text-shadow: 0 0 6px var(--matrix-red);
+}
+
+.grid-cell.smith-stunned {
+  color: var(--matrix-yellow);
+  opacity: 0.6;
+}
+
+@keyframes neo-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+    text-shadow:
+      0 0 15px var(--matrix-white),
+      0 0 30px var(--matrix-green);
+  }
+}
+
+/* ── Status panel ───────────────────────────────── */
+
+.status-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.status-section {
+  border: 1px solid var(--matrix-dark-green);
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.status-section h3 {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  text-shadow: 0 0 8px var(--matrix-green);
+}
+
+.status-divider {
+  color: var(--matrix-dark-green);
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  padding: 2px 0;
+}
+
+.status-label {
+  color: var(--matrix-dim);
+}
+
+.status-value {
+  color: var(--matrix-green);
+}
+
+.status-value.active {
+  color: var(--matrix-bright-green);
+}
+.status-value.captured {
+  color: var(--matrix-red);
+}
+.status-value.ready {
+  color: var(--matrix-bright-green);
+}
+.status-value.cooldown {
+  color: var(--matrix-yellow);
+}
+.status-value.depleted {
+  color: var(--matrix-red);
+}
+
+.status-value.phase-hunt {
+  color: var(--matrix-green);
+}
+.status-value.phase-replication {
+  color: var(--matrix-yellow);
+}
+.status-value.phase-burly-brawl {
+  color: var(--matrix-red);
+}
+.status-value.phase-resolution {
+  color: var(--matrix-white);
+}
+
+/* ── Event log ──────────────────────────────────── */
+
+.event-log {
+  border: 1px solid var(--matrix-dark-green);
+  padding: 8px 12px;
+  height: 150px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.9);
+  font-size: 12px;
+  scroll-behavior: smooth;
+}
+
+.event-log::-webkit-scrollbar {
+  width: 4px;
+}
+
+.event-log::-webkit-scrollbar-thumb {
+  background: var(--matrix-dark-green);
+}
+
+.log-entry {
+  padding: 1px 0;
+  white-space: nowrap;
+}
+
+.log-info {
+  color: var(--matrix-green);
+}
+.log-warning {
+  color: var(--matrix-yellow);
+}
+.log-critical {
+  color: var(--matrix-red);
+  font-weight: 700;
+}
+.log-shockwave {
+  color: var(--matrix-white);
+  font-weight: 700;
+  text-shadow: 0 0 10px var(--matrix-white);
+}
+
+/* ── Footer ─────────────────────────────────────── */
+
+.terminal-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--matrix-dark-green);
+  font-size: 12px;
+}
+
+.footer-mode {
+  color: var(--matrix-dim);
+}
+
+.footer-speed {
+  color: var(--matrix-dark-green);
+}
+
+.progress-bar {
+  color: var(--matrix-green);
+  flex: 1;
+  letter-spacing: -1px;
+}
+
+.footer-result {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.footer-result.neo-wins {
+  color: var(--matrix-bright-green);
+  text-shadow: 0 0 10px var(--matrix-green);
+}
+
+.footer-result.smith-wins {
+  color: var(--matrix-red);
+  text-shadow: 0 0 10px var(--matrix-red);
+}
+
+/* ── Shockwave overlay ──────────────────────────── */
+
+.shockwave-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.shockwave-flash {
+  position: absolute;
+  inset: 0;
+  background: white;
+  animation: flash 0.3s ease-out forwards;
+}
+
+@keyframes flash {
+  0% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.shockwave-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 2px solid var(--matrix-bright-green);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: ring-expand 1.2s ease-out forwards;
+  box-shadow:
+    0 0 20px var(--matrix-green),
+    0 0 40px var(--matrix-green);
+}
+
+.shockwave-ring.ring-2 {
+  animation-delay: 0.15s;
+  border-color: var(--matrix-green);
+}
+
+.shockwave-ring.ring-3 {
+  animation-delay: 0.3s;
+  border-color: var(--matrix-dark-green);
+}
+
+@keyframes ring-expand {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 120vmax;
+    height: 120vmax;
+    opacity: 0;
+  }
+}
+
+/* ── Boot screen ────────────────────────────────── */
+
+.matrix-boot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 18px;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
