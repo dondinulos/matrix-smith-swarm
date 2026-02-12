@@ -49,7 +49,7 @@ npm run web
 
 Opens at `http://localhost:5173` — features Matrix code rain, CRT scanlines, shockwave animations, and a glowing terminal aesthetic.
 
-![UI](UI.png)
+![UI](ui.png)
 
 ### MCP Server
 
