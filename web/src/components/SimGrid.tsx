@@ -1,4 +1,11 @@
-import { SimulationState } from '@engine/types';
+import { SimulationState, FleetAgentRole } from '@engine/types';
+
+const FLEET_CHARS: Record<FleetAgentRole, string> = {
+  TRIAGE: 'T',
+  DIAGNOSIS: 'D',
+  MITIGATION: 'M',
+  COMMS: 'C',
+};
 
 interface Props {
   state: SimulationState;
@@ -30,6 +37,20 @@ export const SimGrid: React.FC<Props> = ({ state }) => {
                 } else {
                   className = 'grid-cell smith';
                   char = 'S';
+                }
+              } else if (cell === 'fleet') {
+                const fleetAgent = state.fleet.agents.find(
+                  (a) =>
+                    a.position.x === x &&
+                    a.position.y === y &&
+                    a.status === 'active',
+                );
+                if (fleetAgent) {
+                  className = `grid-cell fleet fleet-${fleetAgent.role.toLowerCase()}`;
+                  char = FLEET_CHARS[fleetAgent.role];
+                } else {
+                  className = 'grid-cell fleet';
+                  char = 'F';
                 }
               }
 

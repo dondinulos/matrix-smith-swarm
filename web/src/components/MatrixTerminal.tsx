@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { SimulationState } from '@engine/types';
 import { CodeRain } from './CodeRain';
 import { SimGrid } from './SimGrid';
@@ -13,11 +14,15 @@ export const MatrixTerminal: React.FC<Props> = ({ state }) => {
   const showShockwave = state.events.some(
     (e) => e.type === 'shockwave' && e.tick === state.tick,
   );
+  const showFleetDeploy = state.events.some(
+    (e) => e.type === 'fleet' && e.tick === state.tick && e.message.includes('DEPLOYS FLEET'),
+  );
 
   return (
     <div className="matrix-terminal">
       <CodeRain />
-      {showShockwave && <ShockwaveEffect key={state.tick} />}
+      {showShockwave && <ShockwaveEffect key={`shock-${state.tick}`} />}
+      {showFleetDeploy && <FleetDeployEffect key={`fleet-${state.tick}`} />}
 
       <div className="terminal-content">
         <header className="terminal-header">
@@ -70,5 +75,24 @@ const ProgressBar: React.FC<{ tick: number; target: number }> = ({
       {'█'.repeat(filled)}
       {'░'.repeat(empty)} {pct}%
     </span>
+  );
+};
+
+const FleetDeployEffect: React.FC = () => {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!visible) return null;
+
+  return (
+    <div className="fleet-deploy-overlay">
+      <div className="fleet-deploy-flash" />
+      <div className="fleet-deploy-ring" />
+      <div className="fleet-deploy-ring ring-2" />
+    </div>
   );
 };

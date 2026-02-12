@@ -33,6 +33,10 @@ export const EventLog: React.FC<Props> = ({ events }) => {
             prefix = '*';
             className = 'log-shockwave';
             break;
+          case 'fleet':
+            prefix = '◆';
+            className = 'log-fleet';
+            break;
         }
 
         return (

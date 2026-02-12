@@ -18,4 +18,12 @@ export const SIM_CONFIG = {
   autoRestart: true,
   huntPhaseEnd: 50,
   replicationPhaseEnd: 150,
+  // Fleet deployment
+  fleetCooldown: 40,
+  fleetDeployThreshold: 8,
+  fleetSize: 4,
+  fleetLifespan: 30,
+  maxFleetAgents: 6,
+  fleetSeekRange: 10,
+  commsCooldownReduction: 5,
 } as const;

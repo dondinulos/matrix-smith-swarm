@@ -3,6 +3,7 @@ import {
   SimulationEvent,
   SimPhase,
   SimResult,
+  FleetState,
   WorldInterface,
   SwarmStrategy,
 } from './types';
@@ -10,6 +11,7 @@ import { World } from './World';
 import { NeoAgent } from './NeoAgent';
 import { Swarm } from './Swarm';
 import { createSmith, resetSmithCounter } from './SmithAgent';
+import { resetFleetCounter } from './FleetAgent';
 import { SIM_CONFIG } from './config';
 
 export class Simulation {
@@ -22,6 +24,7 @@ export class Simulation {
   private result: SimResult = null;
   private intervalId: ReturnType<typeof setInterval> | null = null;
   private bulletTimeActive = 0;
+  private fleet: FleetState = { agents: [], totalDeployed: 0, smithsDestroyed: 0 };
   private onTickCallback: ((state: SimulationState) => void) | null = null;
 
   constructor() {
@@ -36,7 +39,9 @@ export class Simulation {
     this.events = [];
     this.result = null;
     this.bulletTimeActive = 0;
+    this.fleet = { agents: [], totalDeployed: 0, smithsDestroyed: 0 };
     resetSmithCounter();
+    resetFleetCounter();
     this.world.reset();
     this.neo.reset(this.world.gridSize);
     this.swarm.init(this.world.gridSize);
@@ -109,6 +114,7 @@ export class Simulation {
       this.swarm.smiths,
       worldIface,
       this.events,
+      this.fleet,
     );
 
     if (neoResult.bulletTimeActivated) {
@@ -158,6 +164,11 @@ export class Simulation {
     for (const smith of this.swarm.getActive()) {
       this.world.setCell(smith.position, 'smith');
     }
+    for (const agent of this.fleet.agents) {
+      if (agent.status === 'active') {
+        this.world.setCell(agent.position, 'fleet');
+      }
+    }
     if (this.neo.state.alive) {
       this.world.setCell(this.neo.state.position, 'neo');
     }
@@ -193,6 +204,11 @@ export class Simulation {
         generation: this.swarm.generation,
         strategy: this.swarm.strategy,
         nextReplication: this.swarm.nextReplication,
+      },
+      fleet: {
+        agents: this.fleet.agents.map((a) => ({ ...a, position: { ...a.position } })),
+        totalDeployed: this.fleet.totalDeployed,
+        smithsDestroyed: this.fleet.smithsDestroyed,
       },
       events: this.events.slice(-20),
       result: this.result,

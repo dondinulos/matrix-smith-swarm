@@ -3,9 +3,11 @@ import {
   Position,
   SimulationEvent,
   SmithAgentState,
+  FleetState,
   WorldInterface,
 } from './types';
 import { stunSmith, destroySmith } from './SmithAgent';
+import { deployFleet, tickFleet, hasCommsNearby } from './FleetAgent';
 import { SIM_CONFIG } from './config';
 
 export class NeoAgent {
@@ -19,6 +21,8 @@ export class NeoAgent {
       shockwaveCooldown: 0,
       bulletTimeLeft: SIM_CONFIG.bulletTimeUses,
       dodgeCooldown: 0,
+      fleetCooldown: 0,
+      fleetDeployed: 0,
       alive: true,
     };
   }
@@ -31,6 +35,8 @@ export class NeoAgent {
       shockwaveCooldown: 0,
       bulletTimeLeft: SIM_CONFIG.bulletTimeUses,
       dodgeCooldown: 0,
+      fleetCooldown: 0,
+      fleetDeployed: 0,
       alive: true,
     };
   }
@@ -40,20 +46,29 @@ export class NeoAgent {
     smiths: SmithAgentState[],
     world: WorldInterface,
     events: SimulationEvent[],
-  ): { bulletTimeActivated: boolean; shockwaveActivated: boolean } {
+    fleet: FleetState,
+  ): { bulletTimeActivated: boolean; shockwaveActivated: boolean; fleetDeployed: boolean } {
     let bulletTimeActivated = false;
     let shockwaveActivated = false;
+    let fleetDeployed = false;
 
     if (!this.state.alive)
-      return { bulletTimeActivated, shockwaveActivated };
+      return { bulletTimeActivated, shockwaveActivated, fleetDeployed };
 
     // Decrease cooldowns
     if (this.state.shockwaveCooldown > 0) {
       this.state.shockwaveCooldown--;
+      // Comms aura: reduce cooldown faster
+      if (hasCommsNearby(fleet, this.state.position, world) && this.state.shockwaveCooldown > 0) {
+        this.state.shockwaveCooldown = Math.max(0, this.state.shockwaveCooldown - 1);
+      }
       this.state.shockwaveReady = this.state.shockwaveCooldown <= 0;
     }
     if (this.state.dodgeCooldown > 0) {
       this.state.dodgeCooldown--;
+    }
+    if (this.state.fleetCooldown > 0) {
+      this.state.fleetCooldown--;
     }
 
     const activeSmiths = smiths.filter((s) => s.state === 'active');
@@ -85,6 +100,23 @@ export class NeoAgent {
       });
     }
 
+    // Fleet deployment trigger
+    if (
+      activeSmiths.length >= SIM_CONFIG.fleetDeployThreshold &&
+      this.state.fleetCooldown <= 0 &&
+      fleet.agents.length < SIM_CONFIG.maxFleetAgents
+    ) {
+      const newAgents = deployFleet(this.state.position, world, tick, events);
+      fleet.agents.push(...newAgents);
+      fleet.totalDeployed += newAgents.length;
+      this.state.fleetDeployed += newAgents.length;
+      this.state.fleetCooldown = SIM_CONFIG.fleetCooldown;
+      fleetDeployed = true;
+    }
+
+    // Tick fleet agents
+    tickFleet(fleet, smiths, this.state.position, world, tick, events);
+
     // Move toward safety
     this.moveToSafety(activeSmiths, world);
 
@@ -114,7 +146,7 @@ export class NeoAgent {
       }
     }
 
-    return { bulletTimeActivated, shockwaveActivated };
+    return { bulletTimeActivated, shockwaveActivated, fleetDeployed };
   }
 
   private shockwave(

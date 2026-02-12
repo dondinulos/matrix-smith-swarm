@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const StatusPanel: React.FC<Props> = ({ state }) => {
-  const { swarm, neo, phase } = state;
+  const { swarm, neo, phase, fleet } = state;
 
   return (
     <div className="status-panel">
@@ -85,6 +85,45 @@ export const StatusPanel: React.FC<Props> = ({ state }) => {
               : `CD: ${neo.dodgeCooldown}t`}
           </span>
         </div>
+        <div className="status-row">
+          <span className="status-label">Fleet:</span>
+          <span
+            className={`status-value ${neo.fleetCooldown <= 0 ? 'ready' : 'cooldown'}`}
+          >
+            {neo.fleetCooldown <= 0
+              ? 'READY'
+              : `CD: ${neo.fleetCooldown}t`}
+          </span>
+        </div>
+      </div>
+
+      <div className="status-section fleet-section">
+        <h3>FLEET STATUS</h3>
+        <div className="status-divider">─────────────</div>
+        <div className="status-row">
+          <span className="status-label">Active:</span>
+          <span className="status-value fleet-value">{fleet.agents.length}</span>
+        </div>
+        <div className="status-row">
+          <span className="status-label">Deployed:</span>
+          <span className="status-value fleet-value">{fleet.totalDeployed}</span>
+        </div>
+        <div className="status-row">
+          <span className="status-label">Kills:</span>
+          <span className="status-value fleet-value">{fleet.smithsDestroyed}</span>
+        </div>
+        {fleet.agents.length > 0 && (
+          <div className="fleet-roster">
+            {fleet.agents.map((a) => (
+              <div key={a.id} className="status-row">
+                <span className="status-label fleet-role">{a.role[0]}</span>
+                <span className="status-value fleet-value">
+                  {a.ticksRemaining}t
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

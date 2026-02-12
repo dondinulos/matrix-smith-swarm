@@ -160,6 +160,17 @@ export class TerminalRenderer {
             }
             break;
           }
+          case 'fleet': {
+            const fleetAgent = state.fleet.agents.find(
+              (a) =>
+                a.position.x === x &&
+                a.position.y === y &&
+                a.status === 'active',
+            );
+            const fChar = fleetAgent ? fleetAgent.role[0] : 'F';
+            line += `{cyan-fg}${fChar}{/cyan-fg} `;
+            break;
+          }
           default:
             line += '{green-fg}.{/green-fg} ';
         }
@@ -206,6 +217,13 @@ export class TerminalRenderer {
       ` Shockwave:  ${shockStatus}`,
       ` BulletTime: ${btStatus}`,
       ` Dodge:      ${dodgeStatus}`,
+      '',
+      ' {bold}{cyan-fg}FLEET{/cyan-fg}{/bold}',
+      ' ─────────────────',
+      ` Active:     {cyan-fg}${state.fleet.agents.length}{/cyan-fg}`,
+      ` Deployed:   {cyan-fg}${state.fleet.totalDeployed}{/cyan-fg}`,
+      ` Kills:      {cyan-fg}${state.fleet.smithsDestroyed}{/cyan-fg}`,
+      ` Fleet CD:   ${neo.fleetCooldown <= 0 ? '{green-fg}READY{/green-fg}' : `{yellow-fg}CD: ${neo.fleetCooldown}t{/yellow-fg}`}`,
     ].join('\n');
     this.neoStatus.setContent(content);
   }
@@ -228,6 +246,10 @@ export class TerminalRenderer {
         case 'shockwave':
           color = 'white';
           prefix = '*';
+          break;
+        case 'fleet':
+          color = 'cyan';
+          prefix = '◆';
           break;
       }
       this.logBox.log(

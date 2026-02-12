@@ -1,4 +1,4 @@
-export type CellType = 'empty' | 'neo' | 'smith' | 'wall';
+export type CellType = 'empty' | 'neo' | 'smith' | 'fleet' | 'wall';
 
 export interface Position {
   x: number;
@@ -22,12 +22,27 @@ export interface SmithAgentState {
   strategy: SwarmStrategy;
 }
 
+export type FleetAgentRole = 'TRIAGE' | 'DIAGNOSIS' | 'MITIGATION' | 'COMMS';
+
+export type FleetAgentStatus = 'active' | 'engaged' | 'expired';
+
+export interface FleetAgentState {
+  id: string;
+  role: FleetAgentRole;
+  position: Position;
+  status: FleetAgentStatus;
+  targetSmithId: string | null;
+  ticksRemaining: number;
+}
+
 export interface NeoState {
   position: Position;
   shockwaveReady: boolean;
   shockwaveCooldown: number;
   bulletTimeLeft: number;
   dodgeCooldown: number;
+  fleetCooldown: number;
+  fleetDeployed: number;
   alive: boolean;
 }
 
@@ -38,10 +53,16 @@ export interface SwarmState {
   nextReplication: number;
 }
 
+export interface FleetState {
+  agents: FleetAgentState[];
+  totalDeployed: number;
+  smithsDestroyed: number;
+}
+
 export interface SimulationEvent {
   tick: number;
   message: string;
-  type: 'info' | 'warning' | 'critical' | 'shockwave';
+  type: 'info' | 'warning' | 'critical' | 'shockwave' | 'fleet';
 }
 
 export interface SimulationState {
@@ -51,6 +72,7 @@ export interface SimulationState {
   neo: NeoState;
   smiths: SmithAgentState[];
   swarm: SwarmState;
+  fleet: FleetState;
   events: SimulationEvent[];
   result: SimResult;
 }

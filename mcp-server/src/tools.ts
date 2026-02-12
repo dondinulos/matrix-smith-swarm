@@ -133,4 +133,38 @@ export function registerTools(
       };
     },
   );
+
+  // Get fleet telemetry
+  server.tool(
+    'get_fleet_telemetry',
+    'Get Neo\'s fleet agent telemetry — active agents, roles, positions, kills',
+    {},
+    async () => {
+      const state = simulation.getState();
+      return {
+        content: [
+          {
+            type: 'text' as const,
+            text: JSON.stringify(
+              {
+                activeAgents: state.fleet.agents.length,
+                totalDeployed: state.fleet.totalDeployed,
+                smithsDestroyed: state.fleet.smithsDestroyed,
+                fleetCooldown: state.neo.fleetCooldown,
+                agents: state.fleet.agents.map((a) => ({
+                  id: a.id,
+                  role: a.role,
+                  position: a.position,
+                  ticksRemaining: a.ticksRemaining,
+                  target: a.targetSmithId,
+                })),
+              },
+              null,
+              2,
+            ),
+          },
+        ],
+      };
+    },
+  );
 }
